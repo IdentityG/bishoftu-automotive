@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter, Orbitron, Poppins } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/layout/navbar/Navbar'
+import Footer from '@/components/layout/footer/Footer'
 
 // Primary font for body text - clean and readable
 const inter = Inter({ 
@@ -44,6 +45,7 @@ export default function RootLayout({
        <main className="pt-20 lg:pt-32">
           {children}
        </main>
+       <Footer />
       </body>
     </html>
   )
