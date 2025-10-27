@@ -161,6 +161,7 @@ export default function LeadershipGrid() {
 
   return (
     <section 
+      id="leadership"
       ref={sectionRef}
       className="section-padding relative overflow-hidden bg-white"
     >

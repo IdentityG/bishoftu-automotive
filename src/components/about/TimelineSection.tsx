@@ -153,6 +153,7 @@ export default function TimelineSection() {
 
   return (
     <section 
+      id="timeline"
       ref={sectionRef}
       className="section-padding relative overflow-hidden bg-gradient-to-br from-secondary-50 via-white to-primary-50"
     >

@@ -8,10 +8,8 @@ import {
   Calendar, 
   Heart, 
   Building2, 
-  Award,
-  Globe,
-  Sparkles,
-  MapPin
+  TrendingUp,
+  Lightbulb
 } from 'lucide-react'
 
 const sections = [
@@ -20,9 +18,8 @@ const sections = [
   { id: 'leadership', label: 'Leadership', icon: Users },
   { id: 'culture', label: 'Culture', icon: Heart },
   { id: 'facilities', label: 'Facilities', icon: Building2 },
-  { id: 'certifications', label: 'Certifications', icon: Award },
-  { id: 'sustainability', label: 'Sustainability', icon: Sparkles },
-  { id: 'global-presence', label: 'Global Reach', icon: Globe },
+  { id: 'stats', label: 'Statistics', icon: TrendingUp },
+  { id: 'innovation', label: 'Innovation', icon: Lightbulb },
 ]
 
 export default function PageNavigation() {

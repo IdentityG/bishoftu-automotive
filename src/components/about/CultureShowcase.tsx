@@ -137,6 +137,7 @@ export default function CultureShowcase() {
 
   return (
     <section 
+      id="culture"
       ref={sectionRef}
       className="section-padding relative overflow-hidden bg-gradient-to-br from-secondary-50 via-white to-primary-50"
     >

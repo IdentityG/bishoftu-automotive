@@ -5,6 +5,10 @@ import TimelineSection from '@/components/about/TimelineSection'
 import LeadershipGrid from '@/components/about/LeadershipGrid'
 import CultureShowcase from '@/components/about/CultureShowcase'
 import PageNavigation from '@/components/about/PageNavigation'
+import FacilitiesSection from '@/components/about/FacilitiesSection'
+import StatsCounter from '@/components/about/StatsCounter'
+import InnovationLab from '@/components/about/InnovationLab'
+import ScrollToTop from '@/components/about/ScrollToTop'
 
 export const metadata = {
   title: 'About Us - Bishoftu Automotive & Locomotive Industry',
@@ -15,12 +19,16 @@ export default function AboutPage() {
   return (
     <>
       <PageNavigation />
+      <ScrollToTop />
       <main className="overflow-x-hidden">
         <AboutHero />
         <CompanyOverview />
         <TimelineSection />
         <LeadershipGrid />
         <CultureShowcase />
+        <FacilitiesSection />
+        <StatsCounter />
+        <InnovationLab />
         {/* More sections to be added */}
       </main>
     </>
