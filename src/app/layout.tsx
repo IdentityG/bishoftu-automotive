@@ -4,6 +4,7 @@ import './globals.css'
 import Navbar from '@/components/layout/navbar/Navbar'
 import Footer from '@/components/layout/footer/Footer'
 import ProgressIndicator from './ProgressIndicator'
+import ScrollToTop from '@/components/about/ScrollToTop'
 
 // Primary font for body text - clean and readable
 const inter = Inter({ 
@@ -44,6 +45,7 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-white text-secondary-900">
         <ProgressIndicator />
         <Navbar />
+        <ScrollToTop />
        <main className="pt-20 lg:pt-32">
           {children}
        </main>

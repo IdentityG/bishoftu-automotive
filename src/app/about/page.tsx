@@ -8,7 +8,7 @@ import PageNavigation from '@/components/about/PageNavigation'
 import FacilitiesSection from '@/components/about/FacilitiesSection'
 import StatsCounter from '@/components/about/StatsCounter'
 import InnovationLab from '@/components/about/InnovationLab'
-import ScrollToTop from '@/components/about/ScrollToTop'
+import ProgressIndicator from '../ProgressIndicator'
 
 export const metadata = {
   title: 'About Us - Bishoftu Automotive & Locomotive Industry',
@@ -18,8 +18,8 @@ export const metadata = {
 export default function AboutPage() {
   return (
     <>
+      <ProgressIndicator />
       <PageNavigation />
-      <ScrollToTop />
       <main className="overflow-x-hidden">
         <AboutHero />
         <CompanyOverview />

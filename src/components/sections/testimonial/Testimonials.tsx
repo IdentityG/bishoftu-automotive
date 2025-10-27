@@ -1,18 +1,13 @@
-// src/components/home/Testimonials.tsx
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { gsap } from 'gsap'
 import { 
   Quote,
   Star,
   ChevronLeft,
   ChevronRight,
   Play,
-  Building2,
-  User,
-  Award
 } from 'lucide-react'
 import Image from 'next/image'
 
@@ -96,29 +91,9 @@ const platforms = [
 export default function Testimonials() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
-  const sectionRef = useRef<HTMLDivElement>(null)
   const videoRef = useRef<HTMLVideoElement>(null)
 
   const currentTestimonial = testimonials[currentIndex]
-
-  useEffect(() => {
-    if (!sectionRef.current) return
-
-    const ctx = gsap.context(() => {
-      gsap.from('.testimonial-card', {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 70%',
-        },
-        scale: 0.9,
-        opacity: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-      })
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [])
 
   const handlePrevious = () => {
     setCurrentIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1))
@@ -137,11 +112,12 @@ export default function Testimonials() {
     }
   }
 
+  const handleVideoEnded = () => {
+    setIsPlaying(false)
+  }
+
   return (
-    <section 
-      ref={sectionRef}
-      className="section-padding relative overflow-hidden bg-gradient-to-br from-white via-primary-50/30 to-secondary-50"
-    >
+    <section className="section-padding relative overflow-hidden bg-gradient-to-br from-white via-primary-50/30 to-secondary-50">
       {/* Background Decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 -right-32 w-96 h-96 bg-primary-200/40 rounded-full blur-3xl" />
@@ -189,13 +165,16 @@ export default function Testimonials() {
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
-              initial={{ opacity: 0, x: 100 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -100 }}
-              transition={{ duration: 0.5 }}
-              className="testimonial-card bg-white rounded-3xl shadow-2xl overflow-hidden"
+              initial={{ opacity: 0, x: 100, scale: 0.95 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -100, scale: 0.95 }}
+              transition={{ 
+                duration: 0.6,
+                ease: [0.25, 0.8, 0.25, 1] // Smooth ease
+              }}
+              className="bg-white rounded-3xl shadow-2xl overflow-hidden"
             >
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 gap-0">
                 {/* Left Side - Image/Video */}
                 <div className="relative bg-secondary-100 min-h-[400px] md:min-h-[600px]">
                   {!isPlaying ? (
@@ -205,6 +184,7 @@ export default function Testimonials() {
                         alt={currentTestimonial.name}
                         fill
                         className="object-cover"
+                        priority
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                       
@@ -219,7 +199,7 @@ export default function Testimonials() {
                       {/* Client Info Overlay */}
                       <div className="absolute bottom-6 left-6 right-6 text-white">
                         <div className="flex items-center gap-4 mb-3">
-                          <div className="w-16 h-16 bg-white rounded-xl p-2">
+                          <div className="w-16 h-16 bg-white rounded-xl p-2 shadow-lg">
                             <Image
                               src={currentTestimonial.companyLogo}
                               alt={currentTestimonial.company}
@@ -242,6 +222,7 @@ export default function Testimonials() {
                       src={currentTestimonial.videoUrl}
                       controls
                       className="w-full h-full object-cover"
+                      onEnded={handleVideoEnded}
                     />
                   )}
                 </div>
@@ -276,7 +257,9 @@ export default function Testimonials() {
                     {Object.entries(currentTestimonial.stats).map(([key, value]) => (
                       <div key={key} className="text-center p-3 bg-secondary-50 rounded-lg">
                         <div className="text-lg font-bold text-primary-600">{value as string}</div>
-                        <div className="text-xs text-secondary-600 capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</div>
+                        <div className="text-xs text-secondary-600 capitalize">
+                          {key.replace(/([A-Z])/g, ' $1').trim()}
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -287,12 +270,14 @@ export default function Testimonials() {
                       <button
                         onClick={handlePrevious}
                         className="w-12 h-12 bg-secondary-100 rounded-full flex items-center justify-center hover:bg-primary-500 hover:text-white transition-colors"
+                        aria-label="Previous testimonial"
                       >
                         <ChevronLeft className="w-5 h-5" />
                       </button>
                       <button
                         onClick={handleNext}
                         className="w-12 h-12 bg-secondary-100 rounded-full flex items-center justify-center hover:bg-primary-500 hover:text-white transition-colors"
+                        aria-label="Next testimonial"
                       >
                         <ChevronRight className="w-5 h-5" />
                       </button>
@@ -303,16 +288,20 @@ export default function Testimonials() {
                       {testimonials.map((_, index) => (
                         <button
                           key={index}
-                          onClick={() => setCurrentIndex(index)}
-                          className={`h-2 rounded-full transition-all ${
+                          onClick={() => {
+                            setCurrentIndex(index)
+                            setIsPlaying(false)
+                          }}
+                          className={`h-2 rounded-full transition-all duration-300 ${
                             index === currentIndex ? 'w-8 bg-primary-500' : 'w-2 bg-secondary-300'
                           }`}
+                          aria-label={`Go to testimonial ${index + 1}`}
                         />
                       ))}
                     </div>
 
                     {/* Counter */}
-                    <div className="text-sm text-secondary-600">
+                    <div className="text-sm text-secondary-600 font-medium">
                       {currentIndex + 1} / {testimonials.length}
                     </div>
                   </div>
@@ -327,6 +316,7 @@ export default function Testimonials() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
           className="mb-16"
         >
           <h3 className="heading-4 text-center mb-8">Rated Excellent Across Platforms</h3>
@@ -334,10 +324,15 @@ export default function Testimonials() {
             {platforms.map((platform, index) => (
               <motion.div
                 key={index}
-                initial={{ scale: 0 }}
-                whileInView={{ scale: 1 }}
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.1, type: 'spring' }}
+                transition={{ 
+                  delay: index * 0.1, 
+                  type: 'spring',
+                  stiffness: 300,
+                  damping: 20
+                }}
                 className="bg-white rounded-xl p-6 shadow-lg text-center hover:shadow-xl transition-shadow"
               >
                 <div className="text-4xl mb-3">{platform.icon}</div>
@@ -349,6 +344,8 @@ export default function Testimonials() {
                       className={`w-5 h-5 ${
                         i < Math.floor(platform.rating)
                           ? 'text-accent-orange fill-accent-orange'
+                          : i < platform.rating
+                          ? 'text-accent-orange fill-accent-orange/50'
                           : 'text-secondary-300'
                       }`}
                     />
@@ -366,12 +363,17 @@ export default function Testimonials() {
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
           className="text-center"
         >
           <h3 className="heading-5 mb-8 text-secondary-600">Trusted by Leading Organizations</h3>
           <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 opacity-60 hover:opacity-100 transition-opacity">
             {testimonials.map((testimonial, index) => (
-              <div key={index} className="grayscale hover:grayscale-0 transition-all">
+              <motion.div
+                key={index}
+                whileHover={{ scale: 1.05 }}
+                className="grayscale hover:grayscale-0 transition-all"
+              >
                 <Image
                   src={testimonial.companyLogo}
                   alt={testimonial.company}
@@ -379,7 +381,7 @@ export default function Testimonials() {
                   height={60}
                   className="object-contain"
                 />
-              </div>
+              </motion.div>
             ))}
           </div>
         </motion.div>

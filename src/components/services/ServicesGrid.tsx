@@ -1,9 +1,7 @@
-// src/components/services/ServicesGrid.tsx
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { gsap } from 'gsap'
 import { 
   Factory,
   Wrench,
@@ -25,7 +23,7 @@ import Image from 'next/image'
 
 const serviceCategories = [
   { id: 'all', label: 'All Services', count: 24 },
-  { id: 'manufacturing', label: 'Manufacturing', count: 6 },
+  { id: '000', label: 'Manufacturing', count: 6 },
   { id: 'maintenance', label: 'Maintenance & Repair', count: 8 },
   { id: 'support', label: 'Technical Support', count: 5 },
   { id: 'parts', label: 'Parts Supply', count: 3 },
@@ -299,26 +297,6 @@ export default function ServicesGrid() {
   const [selectedService, setSelectedService] = useState<typeof services[0] | null>(null)
   const sectionRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (!sectionRef.current) return
-
-    const ctx = gsap.context(() => {
-      gsap.from('.service-card', {
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 70%',
-        },
-        y: 60,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: 'power3.out',
-      })
-    }, sectionRef)
-
-    return () => ctx.revert()
-  }, [activeCategory])
-
   const filteredServices = activeCategory === 'all' 
     ? services 
     : services.filter(s => s.category === activeCategory)
@@ -401,15 +379,20 @@ export default function ServicesGrid() {
 
         {/* Services Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence mode="wait">
+          <AnimatePresence mode="popLayout">
             {filteredServices.map((service, index) => (
               <motion.div
                 key={service.id}
-                className="service-card group cursor-pointer"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                transition={{ delay: index * 0.1 }}
+                layout
+                initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: -20 }}
+                transition={{ 
+                  duration: 0.5,
+                  delay: index * 0.05,
+                  ease: [0.25, 0.8, 0.25, 1]
+                }}
+                className="group cursor-pointer"
                 onClick={() => setSelectedService(service)}
                 whileHover={{ y: -8 }}
               >
@@ -430,6 +413,7 @@ export default function ServicesGrid() {
                       alt={service.title}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      priority={index < 3}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     
@@ -535,6 +519,7 @@ function ServiceDetailModal({ service, onClose }: { service: typeof services[0],
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
+        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
         className="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
